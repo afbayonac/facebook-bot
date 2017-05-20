@@ -1,6 +1,8 @@
 const http = require('http')
 const Bot = require('messenger-bot')
 const cfg = require('./secret')
+var forismatic = require('forismatic-node')()
+
 let bot = new Bot({
   token: cfg.token,
   verify: cfg.verify,
@@ -18,13 +20,18 @@ bot.on('message', (payload, reply) => {
   bot.getProfile(payload.sender.id, (err, profile) => {
     if (err) throw err
 
-    reply({ text }, (err) => {
-      if (err) throw err
-
-      console.log(`Echoed back to ${profile.first_name} ${profile.last_name}: ${text}`)
+    forismatic.getQuote(function (error, quote) {
+      if (!error) {
+        reply({ text: quote.quoteLink }, (err) => {
+          if (err) throw err
+          console.log(`Echoed back to ${profile.first_name} ${profile.last_name}: ${text}`)
+        })
+      } else {
+        console.error(error)
+      }
     })
   })
 })
 
 http.createServer(bot.middleware()).listen(5000)
-console.log('Echo bot server running at port 3000.')
+console.log('Echo bot server running at port 5000.')
