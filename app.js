@@ -15,20 +15,14 @@ bot.on('error', (err) => {
 })
 
 bot.on('message', (payload, reply) => {
-  let text = payload.message.text
-
   bot.getProfile(payload.sender.id, (err, profile) => {
     if (err) throw err
-
     forismatic.getQuote(function (error, quote) {
-      if (!error) {
-        reply({ text: quote.quoteLink }, (err) => {
-          if (err) throw err
-          console.log(`Echoed back to ${profile.first_name} ${profile.last_name}: ${text}`)
-        })
-      } else {
-        console.error(error)
-      }
+      if (error) throw err
+      reply({ text: quote.quoteLink }, (err) => {
+        if (err) throw err
+        console.log(`log ok`)
+      })
     })
   })
 })
